@@ -31,18 +31,22 @@ from libqtile.lazy import lazy
 from libqtile import qtile, hook, extension
 import os, subprocess, socket
 
+# Win key set as mod key
 mod = "mod4"
-terminal = "kitty"
-WebBrowser = "firefox"
-#AppLauncher = "rofi -show drun"
-AppLauncher = "bash ~/.config/rofi/launchers/misc/launcher.sh"
 
+# Basic programs
+terminal = "kitty"
+WebBrowser = "waterfox-g4"
+AppLauncher = "dmenu_run"
+
+# Gaps between windows
 margin_size = 4
 
+# Keybindings
 keys = [
     Key([mod], "Return", lazy.spawn(terminal)),
     Key([mod, "shift"], "Return", lazy.spawn(WebBrowser)),
-    Key([mod], "space", lazy.spawn("bash /home/maciek/.config/rofi/launchers/misc/launcher.sh")),
+    Key([mod], "space", lazy.spawn(AppLauncher)),
     Key([mod, "shift"], "p", lazy.spawn("flameshot gui")),
 
     Key([mod], "h", lazy.layout.left()),
@@ -66,6 +70,7 @@ keys = [
     Key([mod, "control"], "q", lazy.shutdown()),
 ]
 
+# Workspaces
 groups = [Group(i) for i in "123456789"]
 
 for i in groups:
@@ -90,6 +95,7 @@ widget_defaults = dict(
 
 extenstion_defaults = widget_defaults.copy()
 
+# Top bar colors
 colors = [["#282c34", "#282c34"], # panel background
           ["#3d3f4b", "#434758"], # background for current screen tab
           ["#ffffff", "#ffffff"], # font color for group names
@@ -101,6 +107,7 @@ colors = [["#282c34", "#282c34"], # panel background
 
 prompt = "{0}@{1}: ".format(os.environ["USER"], socket.gethostname())
 
+# Top bar layout
 screens = [
     Screen(
         top=bar.Bar(
@@ -147,10 +154,6 @@ screens = [
                     foreground = colors[6],
                     background = colors[0]
                 ),
-                #widget.Systray(
-                #    background = colors [0],
-                #    padding = 5
-                #),
                 widget.Sep(
                     padding=6,
                     linewidth=0,
@@ -217,21 +220,32 @@ follow_mouse_focus = True
 bring_front_click = False
 cursor_warp = False
 
-floating_layout = layout.Floating(float_rules=[
-    *layout.Floating.default_float_rules,
-    Match(wm_class='confirmreset'),
-    Match(wm_class='makebranch'),
-    Match(wm_class='maketag'),
-    Match(wm_class='ssh-askpass'),
-    Match(wm_class='itunes.exe'),
-    Match(wm_class='TelegramDesktop'),
-    Match(wm_class='Gnome-control-center'),
-    Match(wm_class='Cawbird'),
-    Match(wm_class='Minecraft Launcher'),
-    Match(title='branchdialog'),
-    Match(title='pinentry'),
-    ],
-    border_width=0)
+# Floating window exeptions
+# floating_layout = layout.Floating(float_rules=[
+#    *layout.Floating.default_float_rules,
+#    Match(wm_class='confirmreset'),
+#    Match(wm_class='makebranch'),
+#    Match(wm_class='maketag'),
+#    Match(wm_class='ssh-askpass'),
+#    Match(wm_class='TelegramDesktop'),
+#    Match(wm_class='Gnome-control-center'),
+#    Match(wm_class='Minecraft Launcher'),
+#    Match(title='branchdialog'),
+#    Match(title='pinentry'),
+#    ],
+#    border_width=0)
+#
+with open("/home/maciek/.config/qtile/floating_windows.txt", "r") as f:
+    f_rules = f.read().split("\n")
+    f.close()
+
+fr = [*layout.Floating.default_float_rules]
+
+for window in f_rules:
+    if window != '':
+        fr.append(Match(wm_class=window))
+
+floating_layout = layout.Floating(float_rules=fr, border_width=0)
 
 auto_fullscreen = True
 focus_on_window_activation = "smart"

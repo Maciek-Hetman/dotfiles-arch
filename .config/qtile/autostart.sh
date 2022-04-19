@@ -2,4 +2,4 @@
 
 nitrogen --set-zoom-fill --random ~/.config/qtile/wallpapers &
 setxkbmap pl &
-picom &
+picom --config /home/maciek/.config/picom/picom.conf &

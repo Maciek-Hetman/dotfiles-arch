@@ -1,0 +1,8 @@
+confirmreset
+makebranch
+maketag
+ssh-askpass
+Gnome-control-center
+Minecraft Launcher
+TelegramDesktop
+
